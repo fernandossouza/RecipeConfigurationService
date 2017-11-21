@@ -11,8 +11,8 @@ namespace recipeconfigurationservice.Services.Interfaces
 
          Task<Extract> addExtract(Extract extract);
 
-        // Task<Extract> updateExtract(long extractId,Extract extract);
-        // Task<Extract> deleteExtract(long extractId);
+         Task<Extract> updateExtract(long extractId,Extract extract);
+         Task<Extract> deleteExtract(long extractId);
 
         
     }

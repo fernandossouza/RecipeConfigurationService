@@ -28,6 +28,15 @@ namespace recipeconfigurationservice.Controllers
 
         }
 
+         [HttpGet("{extractId}")]
+        public async Task<IActionResult> GetId(long extractId)
+        {
+           
+            var extracts = await _iExtractService.getExtract(extractId);
+            return Ok(extracts);
+
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Extract extract)
         {
@@ -37,6 +46,38 @@ namespace recipeconfigurationservice.Controllers
             {
                 extract = await _iExtractService.addExtract(extract);
                 return Created($"api/Extract/{extract.extractId}",extract);
+            }
+            return BadRequest(ModelState);
+        }
+
+          [HttpPut]
+        public async Task<IActionResult> Put([FromQuery]long extractId,[FromBody]Extract extract)
+        {
+            if (ModelState.IsValid)
+            {
+
+                var extracts = await _iExtractService.updateExtract(extractId,extract);
+                if (extracts == null)
+                {
+                    return NotFound();
+                }
+                return Ok(extracts);
+            }
+            return BadRequest(ModelState);
+        }
+
+           [HttpDelete]
+        public async Task<IActionResult> Delete([FromQuery]long extractId)
+        {
+            if (extractId>0)
+            {
+
+                var extracts = await _iExtractService.deleteExtract(extractId);
+                if (extracts == null)
+                {
+                    return NotFound();
+                }
+                return Ok(extracts);
             }
             return BadRequest(ModelState);
         }

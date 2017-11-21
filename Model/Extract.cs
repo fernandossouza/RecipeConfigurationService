@@ -10,6 +10,9 @@ namespace recipeconfigurationservice.Model
         [Required]
         [MaxLength(50)]
         public string name{get;set;}
+        [Required]
+        [MaxLength(10)]
+        public string enabled{get;set;}
         [MaxLength(200)]
         public string description{get;set;}
         public ICollection<ExtractConfiguration> extractConfiguration{get;set;}

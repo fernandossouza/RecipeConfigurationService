@@ -51,11 +51,51 @@ namespace recipeconfigurationservice.Services
 
         public async Task<Extract> addExtract(Extract extract)
         {
-           
             _context.Extracts.Add(extract);
             await _context.SaveChangesAsync();
             return extract;
         }
+
+        public async Task<Extract> updateExtract(long extractId, Extract extract)
+        {
+            var extractDB = await _context.Extracts
+                    .Include(x => x.extractConfiguration)
+                     .ThenInclude(x=>x.parameterIn)
+                     .Include(x => x.extractConfiguration)
+                     .ThenInclude(x=>x.parameterOut)
+                     .Where(x => x.extractId == extractId)
+                     .FirstOrDefaultAsync();
+
+
+            if (extractId != extractDB.extractId && extractDB == null)
+            {
+                return null;
+            }
+
+            _context.Extracts.Update(extract);
+            await _context.SaveChangesAsync();
+            return extract;
+        }
+
+        public async Task<Extract> deleteExtract(long extractId)
+        {
+            var extractDB = await _context.Extracts
+                    .Include(x => x.extractConfiguration)
+                     .ThenInclude(x=>x.parameterIn)
+                     .Include(x => x.extractConfiguration)
+                     .ThenInclude(x=>x.parameterOut)
+                     .Where(x => x.extractId == extractId)
+                     .FirstOrDefaultAsync();
+
+
+            if (extractDB != null)
+            {
+               extractDB.enabled="false";
+               await updateExtract(extractId,extractDB);
+            }
+            return extractDB;
+        }
+
 
     }
 }
