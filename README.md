@@ -61,106 +61,106 @@ This used for configuration of extraction information.
   ## API Configuration
 - apiConfiguration: Object for configuration of API of extract
 - endPoint: endpoint of API
-  - String (100 characters)
+    - String (100 characters)
 - method: method for extract
-  - String (10 characters)
-  - values: GET,PUT,POST or DELETE
+    - String (10 characters)
+    - values: GET,PUT,POST or DELETE
 - sqlConfiguration: Object for configuration of connection SQL
 - commandSQL: command for execute in database 
-  - String (200 characters)
+    - String (200 characters)
 - input: list parameter for execution of command sql or api, case not necessary not fill
 - path: name of parameter
-  - String (50 characters)
+    - String (50 characters)
 - type: type of parameter
-  - String (10 characters)
-  - Mandatory 
-  - Values: static or dynamic
+    - String (10 characters)
+    - Mandatory 
+    - Values: static or dynamic
 - value: value for input parameter, if the type is static
-  - String (50 characters)
+    - String (50 characters)
 - output: list parameter for use on process transform and load
 - localName: parameter for use on process transform and load, must not have repeated names in the same extraction
 - type: type of parameter
-  - String (10 characters)
-  - Mandatory 
-  - Values: static or dynamic
+    - String (10 characters)
+    - Mandatory 
+    - Values: static or dynamic
 - path: name of parameter output of command sql
-  - String (50 characters)
+    - String (50 characters)
 - value: value for output parameter, if the type is static
-  - String (50 characters)
+    - String (50 characters)
 
 ### JSON Example SQL Configuration:
 ```json
-    {
-        "extractId": 1,
-        "name": "Nome Novo2",
-        "enabled": "true",
-        "description": "Desc teste update",
-        "extractConfiguration": [
-            {
-                "extractConfigurationId": 1,
-                "name": "Configuração 1",
-                "description": "Descrição",
-                "type": "sql3",
-                "sqlConfiguration":{ 
-                	"commandSQL":"teste/da/String",
-                	"stringConection":"string de conexão",
-                	"typeDb":"Mssql",
-                	"input": [
-                    	{
-                    		"path": "teste/teste2",
-                        	"type": "fixo",
-                        	"value": "20"
-                    	}
-            		],
-                	"output": [
-                    	{
-                            "type": "fixo",
-                        	"path": "path/teste",
-                        	"localName": "nomeParametro",
-                        	"value": null
-                		}
-                	]
-                	
-                }
+{
+    "extractId": 1,
+    "name": "Nome Novo2",
+    "enabled": "true",
+    "description": "Desc teste update",
+    "extractConfiguration": [
+        {
+            "extractConfigurationId": 1,
+            "name": "Configuração 1",
+            "description": "Descrição",
+            "type": "sql3",
+            "sqlConfiguration":{ 
+                "commandSQL":"teste/da/String",
+                "stringConection":"string de conexão",
+                "typeDb":"Mssql",
+                "input": [
+                    {
+                        "path": "teste/teste2",
+                        "type": "fixo",
+                        "value": "20"
+                    }
+                ],
+                "output": [
+                    {
+                        "type": "fixo",
+                        "path": "path/teste",
+                        "localName": "nomeParametro",
+                        "value": null
+                    }
+                ]
+                
             }
-        ]
-    }
+        }
+    ]
+}
 ```
 ### JSON Example SQL Configuration:
 ```json
-    {
-        "extractId": 1,
-        "name": "Nome Novo2",
-        "enabled": "true",
-        "description": "Desc teste update",
-        "extractConfiguration": [
-            {
-                "extractConfigurationId": 1,
-                "name": "Configuração 1",
-                "description": "Descrição",
-                "type": "sql3",
-                "sqlConfiguration":{ 
-                	"commandSQL":"teste/da/String",
-                	"stringConection":"string de conexão",
-                	"typeDb":"Mssql",
-                	"input": [
-                    	{
-                    		"path": "teste/teste2",
-                        	"type": "fixo",
-                        	"value": "20"
-                    	}
-            		],
-                	"output": [
-                    	{
-                            "type": "fixo",
-                        	"path": "path/teste",
-                        	"localName": "nomeParametro",
-                        	"value": null
-                		}
-                	]
-                	
-                }
+{
+    "extractId": 1,
+    "name": "Nome Novo2",
+    "enabled": "true",
+    "description": "Desc teste update",
+    "extractConfiguration": [
+        {
+            "extractConfigurationId": 1,
+            "name": "Configuração 1",
+            "description": "Descrição",
+            "type": "sql3",
+            "sqlConfiguration":{ 
+                "commandSQL":"teste/da/String",
+                "stringConection":"string de conexão",
+                "typeDb":"Mssql",
+                "input": [
+                    {
+                        "path": "teste/teste2",
+                        "type": "fixo",
+                        "value": "20"
+                    }
+                ],
+                "output": [
+                    {
+                        "type": "fixo",
+                        "path": "path/teste",
+                        "localName": "nomeParametro",
+                        "value": null
+                    }
+                ]
+                
             }
-        ]
-    }
+        }
+    ]
+}
 ```
