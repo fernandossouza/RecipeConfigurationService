@@ -6,9 +6,11 @@ namespace recipeconfigurationservice.Model
     {
         [Key]
         public int extractInParameterId {get;set;}
+        [MaxLength(50)]
         public string path{get;set;}
         [Required]
         public string type{get;set;}
+        [MaxLength(50)]
         public string value{get;set;}
     }
 }

@@ -16,8 +16,6 @@ namespace recipeconfigurationservice.Model
         public EType type{get;set;}
         public SqlConfiguration sqlConfiguration{get;set;} 
         public ApiConfiguration apiConfiguration{get;set;}
-        public ICollection<ExtractInParameter> parameterIn{get;set;}
-        public ICollection<ExtractOutParameter> parameterOut{get;set;}
         
     }
 }
