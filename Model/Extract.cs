@@ -6,7 +6,7 @@ namespace recipeconfigurationservice.Model
     public class Extract
     {
         [Key]
-        public long extractId{get;set;}
+        public int extractId{get;set;}
         [Required]
         [MaxLength(50)]
         public string name{get;set;}

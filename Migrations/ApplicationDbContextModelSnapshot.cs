@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using recipeconfigurationservice.Data;
+using recipeconfigurationservice.Model;
 using System;
 
 namespace recipeconfigurationservice.Migrations
@@ -20,9 +21,23 @@ namespace recipeconfigurationservice.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
 
+            modelBuilder.Entity("recipeconfigurationservice.Model.ApiConfiguration", b =>
+                {
+                    b.Property<int>("apiConfigurationId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("endPoint");
+
+                    b.Property<string>("method");
+
+                    b.HasKey("apiConfigurationId");
+
+                    b.ToTable("ApiConfiguration");
+                });
+
             modelBuilder.Entity("recipeconfigurationservice.Model.Extract", b =>
                 {
-                    b.Property<long>("extractId")
+                    b.Property<int>("extractId")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("description")
@@ -43,42 +58,41 @@ namespace recipeconfigurationservice.Migrations
 
             modelBuilder.Entity("recipeconfigurationservice.Model.ExtractConfiguration", b =>
                 {
-                    b.Property<long>("extractConfigurationId")
+                    b.Property<int>("extractConfigurationId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("commandSQL");
+                    b.Property<int?>("apiConfigurationId");
 
                     b.Property<string>("description")
                         .HasMaxLength(200);
 
-                    b.Property<string>("endPoint");
-
-                    b.Property<long?>("extractId");
-
-                    b.Property<string>("method");
+                    b.Property<int?>("extractId");
 
                     b.Property<string>("name")
                         .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("stringConection");
+                    b.Property<int?>("sqlConfigurationId");
 
-                    b.Property<string>("type")
-                        .IsRequired();
+                    b.Property<int>("type");
 
                     b.HasKey("extractConfigurationId");
 
+                    b.HasIndex("apiConfigurationId");
+
                     b.HasIndex("extractId");
+
+                    b.HasIndex("sqlConfigurationId");
 
                     b.ToTable("ExtractConfigurations");
                 });
 
             modelBuilder.Entity("recipeconfigurationservice.Model.ExtractInParameter", b =>
                 {
-                    b.Property<long>("extractInParameterId")
+                    b.Property<int>("extractInParameterId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("extractConfigurationId");
+                    b.Property<int?>("extractConfigurationId");
 
                     b.Property<string>("path");
 
@@ -96,10 +110,10 @@ namespace recipeconfigurationservice.Migrations
 
             modelBuilder.Entity("recipeconfigurationservice.Model.ExtractOutParameter", b =>
                 {
-                    b.Property<long>("extractOutParameterId")
+                    b.Property<int>("extractOutParameterId")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("extractConfigurationId");
+                    b.Property<int?>("extractConfigurationId");
 
                     b.Property<string>("name")
                         .IsRequired();
@@ -115,11 +129,35 @@ namespace recipeconfigurationservice.Migrations
                     b.ToTable("ExtractOutParameters");
                 });
 
+            modelBuilder.Entity("recipeconfigurationservice.Model.SqlConfiguration", b =>
+                {
+                    b.Property<int>("sqlConfigurationId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("commandSQL");
+
+                    b.Property<string>("stringConection");
+
+                    b.Property<int>("typeDb");
+
+                    b.HasKey("sqlConfigurationId");
+
+                    b.ToTable("SqlConfiguration");
+                });
+
             modelBuilder.Entity("recipeconfigurationservice.Model.ExtractConfiguration", b =>
                 {
+                    b.HasOne("recipeconfigurationservice.Model.ApiConfiguration", "apiConfiguration")
+                        .WithMany()
+                        .HasForeignKey("apiConfigurationId");
+
                     b.HasOne("recipeconfigurationservice.Model.Extract")
                         .WithMany("extractConfiguration")
                         .HasForeignKey("extractId");
+
+                    b.HasOne("recipeconfigurationservice.Model.SqlConfiguration", "sqlConfiguration")
+                        .WithMany()
+                        .HasForeignKey("sqlConfigurationId");
                 });
 
             modelBuilder.Entity("recipeconfigurationservice.Model.ExtractInParameter", b =>

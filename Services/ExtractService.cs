@@ -36,7 +36,7 @@ namespace recipeconfigurationservice.Services
             return extracts;
         }
 
-        public async Task<Extract> getExtract(long extractId)
+        public async Task<Extract> getExtract(int extractId)
         {
             var extract = await _context.Extracts
                      .Include(x => x.extractConfiguration)
@@ -56,7 +56,7 @@ namespace recipeconfigurationservice.Services
             return extract;
         }
 
-        public async Task<Extract> updateExtract(long extractId, Extract extract)
+        public async Task<Extract> updateExtract(int extractId, Extract extract)
         {
             var extractDB = await _context.Extracts
                     .Include(x => x.extractConfiguration)
@@ -77,7 +77,7 @@ namespace recipeconfigurationservice.Services
             return extract;
         }
 
-        public async Task<Extract> deleteExtract(long extractId)
+        public async Task<Extract> deleteExtract(int extractId)
         {
             var extractDB = await _context.Extracts
                     .Include(x => x.extractConfiguration)

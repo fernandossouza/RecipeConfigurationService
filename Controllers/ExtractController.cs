@@ -29,7 +29,7 @@ namespace recipeconfigurationservice.Controllers
         }
 
          [HttpGet("{extractId}")]
-        public async Task<IActionResult> GetId(long extractId)
+        public async Task<IActionResult> GetId(int extractId)
         {
            
             var extracts = await _iExtractService.getExtract(extractId);
@@ -40,10 +40,11 @@ namespace recipeconfigurationservice.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]Extract extract)
         {
-            extract.extractId = 0;
 
             if(ModelState.IsValid)
             {
+            extract.extractId = 0;
+
                 extract = await _iExtractService.addExtract(extract);
                 return Created($"api/Extract/{extract.extractId}",extract);
             }
@@ -51,7 +52,7 @@ namespace recipeconfigurationservice.Controllers
         }
 
           [HttpPut]
-        public async Task<IActionResult> Put([FromQuery]long extractId,[FromBody]Extract extract)
+        public async Task<IActionResult> Put([FromQuery]int extractId,[FromBody]Extract extract)
         {
             if (ModelState.IsValid)
             {
@@ -67,7 +68,7 @@ namespace recipeconfigurationservice.Controllers
         }
 
            [HttpDelete]
-        public async Task<IActionResult> Delete([FromQuery]long extractId)
+        public async Task<IActionResult> Delete([FromQuery]int extractId)
         {
             if (extractId>0)
             {

@@ -15,6 +15,8 @@ namespace recipeconfigurationservice.Data
         public DbSet<ExtractConfiguration> ExtractConfigurations{get;set;}
         public DbSet<ExtractInParameter> ExtractInParameters{get;set;}
         public DbSet<ExtractOutParameter> ExtractOutParameters{get;set;}
+        public DbSet<ApiConfiguration> ApiConfiguration{get;set;}
+        public DbSet<SqlConfiguration> SqlConfiguration{get;set;}
 
 
     }
