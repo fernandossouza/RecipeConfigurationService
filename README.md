@@ -89,7 +89,7 @@ This used for configuration of extraction information.
   - String (50 characters)
 
 ### JSON Example SQL Configuration:
-'''json
+```json
     {
         "extractId": 1,
         "name": "Nome Novo2",
@@ -125,9 +125,9 @@ This used for configuration of extraction information.
             }
         ]
     }
-'''
+```
 ### JSON Example SQL Configuration:
-'''json
+```json
     {
         "extractId": 1,
         "name": "Nome Novo2",
@@ -163,4 +163,4 @@ This used for configuration of extraction information.
             }
         ]
     }
-'''
+```
