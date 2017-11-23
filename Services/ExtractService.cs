@@ -39,12 +39,29 @@ namespace recipeconfigurationservice.Services
         public async Task<Extract> getExtract(int extractId)
         {
             var extract = await _context.Extracts
-                     .Include(x => x.extractConfiguration)
-                     .ThenInclude(x=>x.parameterIn)
-                     .Include(x => x.extractConfiguration)
-                     .ThenInclude(x=>x.parameterOut)
+                       .Include(x => x.extractConfiguration)
+                         .ThenInclude(b=>b.apiConfiguration)
+                             .ThenInclude(a=>a.input)
+                    .Include(x => x.extractConfiguration)
+                        .ThenInclude(x=>x.apiConfiguration)
+                            .ThenInclude(x=>x.output)
+                    .Include(x => x.extractConfiguration)
+                        .ThenInclude(x=>x.sqlConfiguration)
+                            .ThenInclude(x=>x.input)
+                    .Include(x => x.extractConfiguration)
+                        .ThenInclude(x=>x.sqlConfiguration)
+                            .ThenInclude(x=>x.output)                     
                      .Where(x => x.extractId == extractId)
                      .FirstOrDefaultAsync();
+
+                     //extract.extractConfiguration
+            
+            
+            // var extractWithIncludes = _context.Entry(extract)
+            //                         .Collection(x=>x.extractConfiguration)                                                                     
+            //                         .LoadAsync();
+
+                     
             
             return extract;
         }
@@ -60,10 +77,19 @@ namespace recipeconfigurationservice.Services
         {
             var extractDB = await _context.Extracts
                     .Include(x => x.extractConfiguration)
-                     .ThenInclude(x=>x.parameterIn)
-                     .Include(x => x.extractConfiguration)
-                     .ThenInclude(x=>x.parameterOut)
-                     .Where(x => x.extractId == extractId)
+                        .ThenInclude(x=>x.apiConfiguration)
+                            .ThenInclude(x=>x.input)
+                    .Include(x => x.extractConfiguration)
+                        .ThenInclude(x=>x.apiConfiguration)
+                            .ThenInclude(x=>x.output)
+                    .Include(x => x.extractConfiguration)
+                        .ThenInclude(x=>x.sqlConfiguration)
+                            .ThenInclude(x=>x.input)
+                    .Include(x => x.extractConfiguration)
+                        .ThenInclude(x=>x.sqlConfiguration)
+                            .ThenInclude(x=>x.output)
+                     .Where(x => x.extractId == extractId )
+                     .AsNoTracking()
                      .FirstOrDefaultAsync();
 
 
@@ -80,10 +106,7 @@ namespace recipeconfigurationservice.Services
         public async Task<Extract> deleteExtract(int extractId)
         {
             var extractDB = await _context.Extracts
-                    .Include(x => x.extractConfiguration)
-                     .ThenInclude(x=>x.parameterIn)
-                     .Include(x => x.extractConfiguration)
-                     .ThenInclude(x=>x.parameterOut)
+                    .Include(x => x.extractConfiguration)                    
                      .Where(x => x.extractId == extractId)
                      .FirstOrDefaultAsync();
 
@@ -95,7 +118,6 @@ namespace recipeconfigurationservice.Services
             }
             return extractDB;
         }
-
 
     }
 }

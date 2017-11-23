@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+
 namespace recipeconfigurationservice.Model
 {
     public class ApiConfiguration
@@ -9,7 +11,7 @@ namespace recipeconfigurationservice.Model
         public string endPoint{get;set;}
         [MaxLength(10)]
         public string method{get;set;}
-        public ICollection<ExtractInParameter> input{get;set;}
-        public ICollection<ExtractOutParameter> output{get;set;}
+        public IList<ExtractInParameter> input{get;set;}
+        public IList<ExtractOutParameter> output{get;set;}
     }
 }

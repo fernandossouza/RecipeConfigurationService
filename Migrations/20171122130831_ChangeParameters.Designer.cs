@@ -12,9 +12,10 @@ using System;
 namespace recipeconfigurationservice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171122130831_ChangeParameters")]
+    partial class ChangeParameters
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,9 +96,6 @@ namespace recipeconfigurationservice.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int?>("apiConfigurationId");
-
-                    b.Property<string>("nameParameter")
-                        .HasMaxLength(50);
 
                     b.Property<string>("path")
                         .HasMaxLength(50);
