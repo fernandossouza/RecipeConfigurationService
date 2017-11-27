@@ -32,6 +32,7 @@ namespace recipeconfigurationservice
             options.UseNpgsql(Configuration.GetConnectionString("ExtractDb")));
 
             services.AddTransient<IExtractService,ExtractService>();
+            services.AddTransient<ILoadService,LoadService>();
 
             services.AddMvc().AddJsonOptions(options => {
     options.SerializerSettings.ReferenceLoopHandling

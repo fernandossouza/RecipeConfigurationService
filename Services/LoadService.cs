@@ -60,13 +60,14 @@ namespace recipeconfigurationservice.Services
         public async Task<Load> updateLoad(int loadId, Load load)
         {
              var loadDb = await _context.Loads
-                       .Include(x => x.loadConfiguration)
+                    .Include(x => x.loadConfiguration)
                          .ThenInclude(b=>b.sqlLoad)
                              .ThenInclude(a=>a.parameterLoad)
                     .Include(x => x.loadConfiguration)
                         .ThenInclude(x=>x.apiLoad)
-                            .ThenInclude(x=>x.parameterLoad)                    
-                     .FirstOrDefaultAsync();
+                            .ThenInclude(x=>x.parameterLoad)
+                    .AsNoTracking()                    
+                    .FirstOrDefaultAsync();
 
 
             if (loadId != loadDb.loadId && loadDb == null)
