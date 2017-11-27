@@ -15,7 +15,7 @@ namespace recipeconfigurationservice.Model
         public string enabled{get;set;}
         [MaxLength(200)]
         public string description{get;set;}
-        [ConfigurationValidation]
+        [ExtractConfigurationValidation]
         public ICollection<ExtractConfiguration> extractConfiguration{get;set;}
     }
 }
