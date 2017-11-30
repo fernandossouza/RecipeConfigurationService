@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace recipeconfigurationservice.Model
 {
@@ -11,7 +13,8 @@ namespace recipeconfigurationservice.Model
         [MaxLength(50)]
         public string nameParameter{get;set;}
         [Required]
-        public string type{get;set;}
+        [JsonConverter(typeof(StringEnumConverter))]
+        public ETypeParameter type{get;set;}
         [MaxLength(50)]
         public string value{get;set;}
     }

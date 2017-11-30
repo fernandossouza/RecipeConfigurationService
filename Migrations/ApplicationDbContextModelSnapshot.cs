@@ -120,8 +120,7 @@ namespace recipeconfigurationservice.Migrations
 
                     b.Property<int?>("sqlConfigurationId");
 
-                    b.Property<string>("type")
-                        .IsRequired();
+                    b.Property<int>("type");
 
                     b.Property<string>("value")
                         .HasMaxLength(50);

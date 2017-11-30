@@ -12,8 +12,8 @@ using System;
 namespace recipeconfigurationservice.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20171127130641_CreateLoad")]
-    partial class CreateLoad
+    [Migration("20171130134047_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -121,8 +121,7 @@ namespace recipeconfigurationservice.Migrations
 
                     b.Property<int?>("sqlConfigurationId");
 
-                    b.Property<string>("type")
-                        .IsRequired();
+                    b.Property<int>("type");
 
                     b.Property<string>("value")
                         .HasMaxLength(50);

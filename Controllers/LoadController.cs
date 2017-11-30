@@ -28,7 +28,7 @@ namespace recipeconfigurationservice.Controllers
 
         }
 
-         [HttpGet("{loadId}")]
+        [HttpGet("{loadId}")]
         public async Task<IActionResult> GetId(int loadId)
         {
            

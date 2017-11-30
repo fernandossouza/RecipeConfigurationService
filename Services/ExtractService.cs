@@ -54,14 +54,6 @@ namespace recipeconfigurationservice.Services
                      .Where(x => x.extractId == extractId)
                      .FirstOrDefaultAsync();
 
-                     //extract.extractConfiguration
-            
-            
-            // var extractWithIncludes = _context.Entry(extract)
-            //                         .Collection(x=>x.extractConfiguration)                                                                     
-            //                         .LoadAsync();
-
-                     
             
             return extract;
         }

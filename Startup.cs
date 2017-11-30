@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using recipeconfigurationservice.Data;
 using recipeconfigurationservice.Services;
 using recipeconfigurationservice.Services.Interfaces;
+using recipeconfigurationservice.ETLClass;
+using recipeconfigurationservice.ETLClass.Interface;
 
 namespace recipeconfigurationservice
 {
@@ -33,6 +35,9 @@ namespace recipeconfigurationservice
 
             services.AddTransient<IExtractService,ExtractService>();
             services.AddTransient<ILoadService,LoadService>();
+            services.AddTransient<ITransformService,TransformService>();
+            services.AddTransient<IHttpOtherApi,HttpOtherApi>();
+            services.AddTransient<IJson,Json>();
 
             services.AddMvc().AddJsonOptions(options => {
     options.SerializerSettings.ReferenceLoopHandling
