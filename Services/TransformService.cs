@@ -39,11 +39,15 @@ namespace recipeconfigurationservice.Services
             ObjExtract objExtract = new ObjExtract();
             objExtract.jsonExtractDynamic = jsonExtract;
 
+            List<Task<bool>> listTasks = new List<Task<bool>>();
 
             foreach(var transform in transformList)
             {
-              transform.Extract(objExtract);
+             listTasks.Add(transform.Extract(objExtract));
             }
+
+            await Task.WhenAll(listTasks);
+
             return objExtract.dicExtract;
         }
 

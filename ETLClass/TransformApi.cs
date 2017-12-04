@@ -11,7 +11,7 @@ namespace recipeconfigurationservice.ETLClass
     public class TransformApi : TransformFactory
     {
         private ApiConfiguration _apiConfiguration;
-        private dynamic _jsonExtract;
+
         private readonly IHttpOtherApi _httpOtherApi;
 
         private readonly IJson _json;
@@ -23,10 +23,10 @@ namespace recipeconfigurationservice.ETLClass
             _json = json;
 
         }
-        public override async void Extract(ObjExtract objExtract)
+        public override async Task<bool> Extract(ObjExtract objExtract)
         {
             //Obtém a url
-            var url = ConstructUrl(objExtract.jsonExtractDynamic);
+            var url = await ConstructUrl(objExtract.jsonExtractDynamic);
             
             // Comunicaçao com a api externa
             string jsonRetornApiString = await _httpOtherApi.RestCommunication(_apiConfiguration.method,url);
@@ -39,20 +39,21 @@ namespace recipeconfigurationservice.ETLClass
             // Criação do dicionario com os valores da extração
             var dicExtractApi = await ComposeDictionaryOfExtract(jsonRetornApiString,objExtract.dicExtract);
 
-
+            return true;
         }
         public override void Load()
         {
+            // Pendencia
 
         }
 
-        private string ConstructUrl(dynamic jsonExtract)
+        private async Task<string> ConstructUrl(dynamic jsonExtract)
         {
             UriBuilder url = new UriBuilder(_apiConfiguration.endPoint);
             var query = HttpUtility.ParseQueryString(url.Query);
             foreach(var input in _apiConfiguration.input)
             {
-                var value = GetValueParameter(input,jsonExtract);
+                var value =  await GetValueParameter(input,jsonExtract);
                 query[input.nameParameter] = value;
             }
             url.Query = query.ToString();
@@ -63,13 +64,11 @@ namespace recipeconfigurationservice.ETLClass
         private async Task<IDictionary<string,string>> ComposeDictionaryOfExtract(string jsonString
         , Dictionary<string,string> dicExtract)
         {           
-
             foreach(var output in _apiConfiguration.output)
             {
                 var value = await _json.GetValuePath(jsonString,output.path);
 
                 dicExtract.Add(output.localName,value);
-
             }
             return dicExtract;
         }

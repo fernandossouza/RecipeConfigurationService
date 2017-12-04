@@ -17,12 +17,20 @@ namespace recipeconfigurationservice.Controllers
             _transformService = transformService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpPut]
+        public async Task<IActionResult> Get([FromQuery]int extractId,[FromBody]dynamic jsonExtract)
         {
-            var loads =  await _transformService.Extraction(1,null);
+            try{
+                var loads =  await _transformService.Extraction(extractId,jsonExtract);
             return Ok(loads);
 
+
+            }
+            catch(Exception ex)
+            {
+               return StatusCode(500, ex.Message);
+            }
+            
         }
         
     }
