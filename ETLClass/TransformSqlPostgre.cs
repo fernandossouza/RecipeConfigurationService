@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Newtonsoft.Json;
 
 
 namespace recipeconfigurationservice.ETLClass
@@ -15,21 +16,23 @@ namespace recipeconfigurationservice.ETLClass
     {
 
         private SqlConfiguration _sqlConfiguration;
+        private SqlLoad _sqlLoad;
         private readonly IHttpOtherApi _httpOtherApi;
         private readonly IJson _json;
 
-        public TransformSqlPostgre (SqlConfiguration sqlConfiguration, IJson json)
+        public TransformSqlPostgre (SqlConfiguration sqlConfiguration,SqlLoad sqlLoad, IJson json)
         {
             _sqlConfiguration = sqlConfiguration;
+            _sqlLoad = sqlLoad;
             _json = json;
 
         }
 
         public override async Task<bool> Extract(ObjExtract objExtract)
         {
-            var commandSQL = await ConstructCommand(objExtract.jsonExtractDynamic);
+            var commandSQL = await ConstructCommand(objExtract.jsonExtractDynamic,_sqlConfiguration.commandSQL,"extract");
 
-            IEnumerable<dynamic> dbResult = await ExecuteCommand(commandSQL);
+            IEnumerable<dynamic> dbResult = await ExecuteCommand(commandSQL,_sqlConfiguration.stringConnection);
 
             if(dbResult == null)
             {
@@ -40,44 +43,87 @@ namespace recipeconfigurationservice.ETLClass
             return true;
         }
 
-         public override void Load()
+         public override async Task<bool> Load(Dictionary<string,string> dicExtract)
         {
-            // Pendencia
+            // Converte dicionario em json
+            dynamic jsonConvertDic = JsonConvert.SerializeObject(dicExtract);
+            
+            var commandSQL = await ConstructCommand(jsonConvertDic,_sqlLoad.commandSQL,"load");
+             IEnumerable<dynamic> dbResult = await ExecuteCommand(commandSQL,_sqlLoad.stringConnection);
+
+            if(dbResult == null)
+            {
+                //pendencia
+            }
+            return true;
 
         }
 
-        private async Task<string> ConstructCommand(dynamic jsonExtract)
+        private async Task<string> ConstructCommand(dynamic jsonDynamic,string command,string typeProcess)
         {
-            string commandSQL = string.Empty;
-            bool first = true;
-
-            commandSQL = _sqlConfiguration.commandSQL;
+            string commandSQL = command;
+            
             commandSQL = commandSQL + " (";
             
-            foreach(var input in _sqlConfiguration.input)
+            if(typeProcess.ToLower() == "extract")
             {
-                string value = await GetValueParameter(input,jsonExtract);
-                commandSQL = commandSQL + "'"+ value +"'";
-
-                if(!first)
-                    commandSQL = commandSQL + ",";
-
-                first = false;
+                commandSQL = await GetParameterExtract(commandSQL,jsonDynamic);
             }
-            
+            else if (typeProcess.ToLower() == "load")
+            {
+                commandSQL = await GetParameterLoad(commandSQL,jsonDynamic);
+            }
             commandSQL = commandSQL + " )";
 
             return commandSQL;
 
         }
 
+         private async Task<string> GetParameterLoad(string command, dynamic jsonDynamic)
+        {
+            string commandSQL = command;
+            bool first = true;
+            foreach(var parameter in _sqlLoad.parameterLoad)
+            {
+                if(!first)
+                    commandSQL = commandSQL + ",";
+                    
+                string value = await GetValueParameter(parameter.type,parameter.localName,parameter.value,jsonDynamic);
+                commandSQL = commandSQL + "'"+ value +"'";
 
-        private async Task<IEnumerable<dynamic>> ExecuteCommand(string commandSQL)
+                
+
+                first = false;
+            }
+            return commandSQL;
+        }
+
+        private async Task<string> GetParameterExtract(string command, dynamic jsonExtract)
+        {
+            string commandSQL = command;
+            bool first = true;
+            foreach(var input in _sqlConfiguration.input)
+            {
+                 if(!first)
+                    commandSQL = commandSQL + ",";
+
+                string value = await GetValueParameter(input.type,input.path,input.value,jsonExtract);
+                commandSQL = commandSQL + "'"+ value +"'";
+
+               
+
+                first = false;
+            }
+            return commandSQL;
+        }
+
+
+        private async Task<IEnumerable<dynamic>> ExecuteCommand(string commandSQL,string stringConnection)
         {
            try
            {
             IEnumerable<dynamic> dbResult;
-            using(IDbConnection dbConnection = new NpgsqlConnection(_sqlConfiguration.stringConnection))
+            using(IDbConnection dbConnection = new NpgsqlConnection(stringConnection))
             {
                 dbConnection.Open();
                 dbResult = await dbConnection.QueryAsync<dynamic>(commandSQL);

@@ -14,12 +14,15 @@ namespace recipeconfigurationservice.ETLClass
 
         private readonly IHttpOtherApi _httpOtherApi;
 
+        private readonly ApiLoad _apiLoad;
+
         private readonly IJson _json;
 
-        public TransformApi (ApiConfiguration apiConfiguration, IHttpOtherApi httpOtherApi, IJson json)
+        public TransformApi (ApiConfiguration apiConfiguration,ApiLoad apiLoad, IHttpOtherApi httpOtherApi, IJson json)
         {
             _apiConfiguration = apiConfiguration;
             _httpOtherApi = httpOtherApi;
+            _apiLoad = apiLoad;
             _json = json;
 
         }
@@ -41,10 +44,10 @@ namespace recipeconfigurationservice.ETLClass
 
             return true;
         }
-        public override void Load()
+        public override async Task<bool> Load(Dictionary<string,string> dicExtract)
         {
             // Pendencia
-
+            return true;
         }
 
         private async Task<string> ConstructUrl(dynamic jsonExtract)
@@ -53,7 +56,7 @@ namespace recipeconfigurationservice.ETLClass
             var query = HttpUtility.ParseQueryString(url.Query);
             foreach(var input in _apiConfiguration.input)
             {
-                var value =  await GetValueParameter(input,jsonExtract);
+                var value =  await GetValueParameter(input.type,input.path,input.value,jsonExtract);
                 query[input.nameParameter] = value;
             }
             url.Query = query.ToString();

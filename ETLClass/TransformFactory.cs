@@ -2,55 +2,73 @@ using recipeconfigurationservice.Model;
 using recipeconfigurationservice.ETLClass.Interface;
 using recipeconfigurationservice.ETLClass;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 namespace recipeconfigurationservice.ETLClass
 {
     public abstract class TransformFactory
     {
-        public static TransformFactory Instance(ExtractConfiguration extractConfiguration)
+        public static TransformFactory Instance(ExtractConfiguration extractConfiguration, LoadConfiguration loadConfiguration,string typeInstance)
         {
             IHttpOtherApi httpOtherApi = new HttpOtherApi();
             IJson jsonService = new Json();
             
-            switch(extractConfiguration.type)
+            if(typeInstance.ToLower() == "extract")
             {
-                case EType.Api:
-                    return new TransformApi(extractConfiguration.apiConfiguration,httpOtherApi,jsonService);
+                switch(extractConfiguration.type)
+                {
+                    case EType.Api:
+                        return new TransformApi(extractConfiguration.apiConfiguration,null,httpOtherApi,jsonService);
 
-                case EType.Sql:
-                    return TransformSqlFactory.InstanceSQL(extractConfiguration,jsonService);
+                    case EType.Sql:
+                        return TransformSqlFactory.InstanceSQL(extractConfiguration,null,jsonService,typeInstance);
+                }
+                return null;
             }
+            else if(typeInstance.ToLower() == "load")
+            {
+                switch(loadConfiguration.type)
+                {
+                    case EType.Api:
+                        return new TransformApi(null,loadConfiguration.apiLoad,httpOtherApi,jsonService);
+
+                    case EType.Sql:
+                        return TransformSqlFactory.InstanceSQL(null,loadConfiguration,jsonService,typeInstance);
+                }
+                return null;
+            }
+
             return null;
 
         }
 
 
-        protected async Task<string> GetValueParameter(ExtractInParameter input,dynamic jsonExtract)
+        protected async Task<string> GetValueParameter(ETypeParameter typeParameter,string path, string value,dynamic jsonExtract)
         {
-            switch(input.type)
+            switch(typeParameter)
             {
                 case ETypeParameter.Static:
-                return input.value;
+                return value;
 
                 case ETypeParameter.Dynamic:
-                return await GetValueParameterDynamic(input,jsonExtract);
+                return await GetValueParameterDynamic(path,jsonExtract);
 
                 default:
                 return null;
             }
         }
 
-        private async Task<string> GetValueParameterDynamic(ExtractInParameter input, dynamic jsonExtract)
+        private async Task<string> GetValueParameterDynamic(string path, dynamic jsonExtract)
         {
             string value = string.Empty;
             IJson jsonService = new Json();
-            value = await jsonService.GetValuePath(jsonExtract.ToString(),input.path);
+            value = await jsonService.GetValuePath(jsonExtract.ToString(),path);
 
             return value;
 
         }
         public abstract Task<bool> Extract(ObjExtract objExtract);
 
-        public abstract void Load();
+        public abstract Task<bool> Load(Dictionary<string,string> dicExtract);
 
 
     }

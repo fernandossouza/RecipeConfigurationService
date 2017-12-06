@@ -5,7 +5,7 @@ namespace recipeconfigurationservice.Services.Interfaces
 {
     public interface ITransformService
     {
-         Task<IDictionary<string,string>> Extraction(int extractId, dynamic jsonExtract);
-        bool Loading(int loadId, Dictionary<string,string> dicExtract);
+        Task<IDictionary<string,string>> Extraction(int extractId, dynamic jsonExtract);
+        Task<bool> Loading(int loadId, Dictionary<string,string> dicExtract);
     }
 }

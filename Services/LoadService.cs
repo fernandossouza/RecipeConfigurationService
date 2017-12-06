@@ -35,9 +35,28 @@ namespace recipeconfigurationservice.Services
             return loads;
         }
 
+         public async Task<List<Load>> getLoadsPerExtractId(int extractId)
+        {
+            var loadId = await _context.Loads
+                     .Where(x=>x.extractId == extractId)
+                     .OrderBy(x => x.loadId)
+                     .Select(x => x.loadId)
+                     .ToListAsync();
+            List<Load> loads = new List<Load>();
+            foreach (var item in loadId)
+            {
+                var load = await getLoad(item);
+                if (load != null)
+                    loads.Add(load);
+            }
+
+            return loads;
+        }
+
         public async Task<Load> getLoad(int loadId)
         {
             var load = await _context.Loads
+                       .Where(x=>x.loadId == loadId)
                        .Include(x => x.loadConfiguration)
                          .ThenInclude(b=>b.sqlLoad)
                              .ThenInclude(a=>a.parameterLoad)

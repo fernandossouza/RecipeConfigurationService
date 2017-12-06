@@ -5,13 +5,27 @@ namespace recipeconfigurationservice.ETLClass
 {
     public abstract class TransformSqlFactory : TransformFactory
     {
-         public static TransformSqlFactory InstanceSQL(ExtractConfiguration extractConfiguration,IJson jsonService)
+         public static TransformSqlFactory InstanceSQL(ExtractConfiguration extractConfiguration,LoadConfiguration loadConfiguration
+         ,IJson jsonService, string typeInstance)
         {
-
-            switch(extractConfiguration.sqlConfiguration.typeDb)
+            if(typeInstance.ToLower() == "extract")
             {
-                case EtypeDb.PostgreSql:                    
-                    return new TransformSqlPostgre(extractConfiguration.sqlConfiguration,jsonService);
+
+                switch(extractConfiguration.sqlConfiguration.typeDb)
+                {
+                    case EtypeDb.PostgreSql:                    
+                        return new TransformSqlPostgre(extractConfiguration.sqlConfiguration,null,jsonService);
+                }
+                return null;
+            }
+            else if(typeInstance.ToLower() == "load")
+            {
+                switch(loadConfiguration.sqlLoad.typeDB)
+                {
+                    case EtypeDb.PostgreSql:                    
+                        return new TransformSqlPostgre(null,loadConfiguration.sqlLoad,jsonService);
+                }
+                return null;
             }
             return null;
 

@@ -30,7 +30,7 @@ namespace recipeconfigurationservice.Services
 
             foreach(var configuration in extract.extractConfiguration)
             {
-                var tranformClass = TransformFactory.Instance(configuration);
+                var tranformClass = TransformFactory.Instance(configuration,null,"extract");
                 if(tranformClass != null)
                     transformList.Add(tranformClass);
             }
@@ -48,11 +48,39 @@ namespace recipeconfigurationservice.Services
 
             await Task.WhenAll(listTasks);
 
+
+            await Loading(extract.extractId,objExtract.dicExtract);
+           
             return objExtract.dicExtract;
         }
 
-         public bool Loading(int loadId, Dictionary<string,string> dicExtract)
+         public async Task<bool> Loading(int extractId, Dictionary<string,string> dicExtract)
         {
+             ILoadService loadService = new LoadService(_context);
+             //Load
+            var loads = await loadService.getLoadsPerExtractId(extractId);
+            // Lista com as classe de extração
+            List<TransformFactory> transformList = new List<TransformFactory>();
+
+            foreach( var load in loads)
+            {
+                foreach(var configuration in load.loadConfiguration)
+                {
+                    var tranformClass = TransformFactory.Instance(null,configuration,"load");
+                    if(tranformClass != null)
+                        transformList.Add(tranformClass);
+                }
+            }
+
+             List<Task<bool>> listTasks = new List<Task<bool>>();
+
+            foreach(var transform in transformList)
+            {
+             listTasks.Add(transform.Load(dicExtract));
+            }
+
+            await Task.WhenAll(listTasks);
+
             return true;
 
         }

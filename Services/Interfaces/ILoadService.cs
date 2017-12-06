@@ -12,5 +12,6 @@ namespace recipeconfigurationservice.Services.Interfaces
 
          Task<Load> updateLoad(int loadId,Load load);
          Task<Load> deleteLoad(int loadId);
+        Task<List<Load>> getLoadsPerExtractId(int extractId);
     }
 }
