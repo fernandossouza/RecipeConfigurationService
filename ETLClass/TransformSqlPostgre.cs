@@ -43,20 +43,21 @@ namespace recipeconfigurationservice.ETLClass
             return true;
         }
 
-         public override async Task<bool> Load(Dictionary<string,string> dicExtract)
+         public override async Task<string> Load(Dictionary<string,string> dicExtract)
         {
             // Converte dicionario em json
+            try{
             dynamic jsonConvertDic = JsonConvert.SerializeObject(dicExtract);
             
             var commandSQL = await ConstructCommand(jsonConvertDic,_sqlLoad.commandSQL,"load");
              IEnumerable<dynamic> dbResult = await ExecuteCommand(commandSQL,_sqlLoad.stringConnection);
-
-            if(dbResult == null)
-            {
-                //pendencia
+            
+            return "ok";
             }
-            return true;
-
+            catch (Exception ex)
+            {
+                return "Load Postgre:" + ex.Message;
+            }
         }
 
         private async Task<string> ConstructCommand(dynamic jsonDynamic,string command,string typeProcess)
@@ -120,8 +121,7 @@ namespace recipeconfigurationservice.ETLClass
 
         private async Task<IEnumerable<dynamic>> ExecuteCommand(string commandSQL,string stringConnection)
         {
-           try
-           {
+          
             IEnumerable<dynamic> dbResult;
             using(IDbConnection dbConnection = new NpgsqlConnection(stringConnection))
             {
@@ -130,11 +130,8 @@ namespace recipeconfigurationservice.ETLClass
             }
 
             return dbResult;
-           }
-            catch (Exception ex)
-            {
-               return null;
-            }
+           
+            
         }
 
         private async Task<bool> AddInDictionary(Dictionary<string,string> dicExtract,IEnumerable<dynamic> dbResult)

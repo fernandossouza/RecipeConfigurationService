@@ -12,6 +12,8 @@ namespace recipeconfigurationservice.Model
         [MaxLength(50)]
         public string queryParameter{get;set;}
         [Required]
+        public ETypeData typeData{get;set;}
+        [Required]
         public ETypeParameter type{get;set;}
         [MaxLength(50)]
         public string value{get;set;}

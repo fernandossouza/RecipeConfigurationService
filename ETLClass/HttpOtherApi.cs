@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace recipeconfigurationservice.ETLClass
 {
@@ -18,6 +19,10 @@ namespace recipeconfigurationservice.ETLClass
                 case "get":
                 return GetApi(url);
 
+                case "post":
+                return PostApi(url,json);
+
+
             }
 
             return null;
@@ -30,6 +35,16 @@ namespace recipeconfigurationservice.ETLClass
             dynamic jsonDynamic = responseString;
 
             return jsonDynamic;
+
+        }
+
+        private async Task<string> PostApi(string url,dynamic json)
+        {
+            var responseString = await _client.PostAsync(url, new StringContent(json, Encoding.UTF8, "application/json"));
+
+           
+
+            return responseString.StatusCode.ToString();
 
         }
     }

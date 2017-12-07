@@ -21,8 +21,9 @@ namespace recipeconfigurationservice.Controllers
         public async Task<IActionResult> Get([FromQuery]int extractId,[FromBody]dynamic jsonExtract)
         {
             try{
-                var loads =  await _transformService.Extraction(extractId,jsonExtract);
-            return Ok(loads);
+                var dicExtract =  await _transformService.Extraction(extractId,jsonExtract);
+                var loads = await _transformService.Loading(extractId,dicExtract);
+            return Ok(new {dicExtract,loads});
 
 
             }

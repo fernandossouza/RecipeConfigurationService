@@ -48,13 +48,11 @@ namespace recipeconfigurationservice.Services
 
             await Task.WhenAll(listTasks);
 
-
-            await Loading(extract.extractId,objExtract.dicExtract);
            
             return objExtract.dicExtract;
         }
 
-         public async Task<bool> Loading(int extractId, Dictionary<string,string> dicExtract)
+         public async Task<List<Task<string>>> Loading(int extractId, Dictionary<string,string> dicExtract)
         {
              ILoadService loadService = new LoadService(_context);
              //Load
@@ -72,7 +70,9 @@ namespace recipeconfigurationservice.Services
                 }
             }
 
-             List<Task<bool>> listTasks = new List<Task<bool>>();
+             List<Task<string>> listTasks = new List<Task<string>>();
+
+             
 
             foreach(var transform in transformList)
             {
@@ -81,7 +81,7 @@ namespace recipeconfigurationservice.Services
 
             await Task.WhenAll(listTasks);
 
-            return true;
+            return listTasks;
 
         }
 

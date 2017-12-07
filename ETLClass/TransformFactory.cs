@@ -7,6 +7,7 @@ namespace recipeconfigurationservice.ETLClass
 {
     public abstract class TransformFactory
     {
+        public string Id{get;set;}
         public static TransformFactory Instance(ExtractConfiguration extractConfiguration, LoadConfiguration loadConfiguration,string typeInstance)
         {
             IHttpOtherApi httpOtherApi = new HttpOtherApi();
@@ -68,7 +69,7 @@ namespace recipeconfigurationservice.ETLClass
         }
         public abstract Task<bool> Extract(ObjExtract objExtract);
 
-        public abstract Task<bool> Load(Dictionary<string,string> dicExtract);
+        public abstract Task<string> Load(Dictionary<string,string> dicExtract);
 
 
     }
