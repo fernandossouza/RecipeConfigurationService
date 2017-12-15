@@ -20,6 +20,12 @@ namespace recipeconfigurationservice.Services
         {
             _context = context;
         }
+        /// <summary>
+        /// Process of Extraction
+        /// </summary>
+        /// <param name="extractId">Id extract</param>
+        /// <param name="jsonExtract">json extract</param>
+        /// <returns>return dictionary with extraction configuration</returns>
         public async Task<IDictionary<string,string>> Extraction(int extractId, dynamic jsonExtract)
         {
             IExtractService extractService = new ExtractService(_context);
@@ -51,7 +57,12 @@ namespace recipeconfigurationservice.Services
            
             return objExtract.dicExtract;
         }
-
+        /// <summary>
+        /// Process load
+        /// </summary>
+        /// <param name="extractId">id extract</param>
+        /// <param name="dicExtract">dictionary with extraction information</param>
+        /// <returns></returns>
          public async Task<List<Task<string>>> Loading(int extractId, Dictionary<string,string> dicExtract)
         {
              ILoadService loadService = new LoadService(_context);

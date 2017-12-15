@@ -8,6 +8,8 @@ namespace recipeconfigurationservice.Model
     {
         [Key]
         public int extractInParameterId {get;set;}
+        [Required]
+        public int order{get;set;}
         [MaxLength(50)]
         public string path{get;set;}
         [MaxLength(50)]

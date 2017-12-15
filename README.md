@@ -41,6 +41,10 @@ This used for configuration of extraction information.
 - input: list parameter for execution of command sql or api, case not necessary not fill
 - path: name of parameter
   - String (50 characters)
+nameParameter: name of the parameter of json dynamic input.
+  - String (10 characters)
+  - Mandatory 
+  - Values: static or dynamic
 - type: type of parameter
   - String (10 characters)
   - Mandatory 
@@ -98,30 +102,42 @@ This used for configuration of extraction information.
     "extractConfiguration": [
         {
             "extractConfigurationId": 1,
-            "name": "Configuração 1",
-            "description": "Descrição",
-            "type": "sql3",
-            "sqlConfiguration":{ 
-                "commandSQL":"teste/da/String",
-                "stringConection":"string de conexão",
-                "typeDb":"Mssql",
+            "name": "Iniciar receita no PLC Procedure",
+            "description": "configuração de extract em procedure para iniciar uma receita no plc",
+            "type": "sql",
+            "sqlConfiguration": {
+                "commandSQL": "exec Procedure",
+                "stringConection": "local\\sqlexpress",
+                "typeDb": 0,
                 "input": [
                     {
-                        "path": "teste/teste2",
-                        "type": "fixo",
+                        "path": "Parametro2",
+                        "nameParameter": null,
+                        "type": "static",
+                        "value": "teste"
+                    },
+                    {
+                        "path": "Parametro1",
+                        "nameParameter": null,
+                        "type": "static",
                         "value": "20"
                     }
                 ],
                 "output": [
                     {
-                        "type": "fixo",
-                        "path": "path/teste",
-                        "localName": "nomeParametro",
+                        "path": null,
+                        "localName": "tempoReceita",
+                        "value": "50"
+                    },
+                    {
+                        "path": "campo1",
+                        "localName": "idReceita",
                         "value": null
                     }
                 ]
-                
-            }
+            },
+            "apiConfiguration": null
+        }
         }
     ]
 }
@@ -136,29 +152,33 @@ This used for configuration of extraction information.
     "extractConfiguration": [
         {
             "extractConfigurationId": 1,
-            "name": "Configuração 1",
-            "description": "Descrição",
-            "type": "sql3",
-            "sqlConfiguration":{ 
-                "commandSQL":"teste/da/String",
-                "stringConection":"string de conexão",
-                "typeDb":"Mssql",
+            "name": "Iniciar receita no PLC API",
+            "description": "configuração de extract em API para iniciar uma receita no plc",
+            "type": "Api",
+            "sqlConfiguration": null,
+            "apiConfiguration": {
+                "endPoint": "http://127.0.0.1:8032/api/things",
+                "method": "get",
                 "input": [
                     {
-                        "path": "teste/teste2",
-                        "type": "fixo",
-                        "value": "20"
+                        "path": null,
+                        "nameParameter": "Id",
+                        "type": "static",
+                        "value": "2"
                     }
                 ],
                 "output": [
                     {
-                        "type": "fixo",
-                        "path": "path/teste",
-                        "localName": "nomeParametro",
+                        "path": "physicalConn",
+                        "localName": "physicalConnectionThing",
+                        "value": null
+                    },
+                    {
+                        "path": "description",
+                        "localName": "descriptionThing",
                         "value": null
                     }
                 ]
-                
             }
         }
     ]

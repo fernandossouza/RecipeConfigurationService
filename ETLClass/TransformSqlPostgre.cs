@@ -28,21 +28,26 @@ namespace recipeconfigurationservice.ETLClass
 
         }
 
+        /// <summary>
+        /// Process extract in database postgreSQL
+        /// </summary>
+        /// <param name="objExtract">object of extract</param>
+        /// <returns></returns>
         public override async Task<bool> Extract(ObjExtract objExtract)
         {
             var commandSQL = await ConstructCommand(objExtract.jsonExtractDynamic,_sqlConfiguration.commandSQL,"extract");
 
             IEnumerable<dynamic> dbResult = await ExecuteCommand(commandSQL,_sqlConfiguration.stringConnection);
 
-            if(dbResult == null)
-            {
-                //pendencia
-            }
 
             await AddInDictionary(objExtract.dicExtract,dbResult);
             return true;
         }
-
+        /// <summary>
+        /// Process of load in database postgreSQL
+        /// </summary>
+        /// <param name="dicExtract">dictionary with extract</param>
+        /// <returns>return string with information of process</returns>
          public override async Task<string> Load(Dictionary<string,string> dicExtract)
         {
             // Converte dicionario em json
@@ -56,10 +61,17 @@ namespace recipeconfigurationservice.ETLClass
             }
             catch (Exception ex)
             {
-                return "Load Postgre:" + ex.Message;
+                return "Load Postgre: " + ex.Message;
             }
         }
 
+        /// <summary>
+        /// Contructor of command SQL for extract or load
+        /// </summary>
+        /// <param name="jsonDynamic">json with parameters of process</param>
+        /// <param name="command">command information in register</param>
+        /// <param name="typeProcess">type of process extract or load</param>
+        /// <returns>return complete command</returns>
         private async Task<string> ConstructCommand(dynamic jsonDynamic,string command,string typeProcess)
         {
             string commandSQL = command;
@@ -80,6 +92,13 @@ namespace recipeconfigurationservice.ETLClass
 
         }
 
+        
+        /// <summary>
+        /// Get parameters to complete command of process load
+        /// </summary>
+        /// <param name="command">command SQL</param>
+        /// <param name="jsonDynamic">json with parameters load</param>
+        /// <returns>return command complete</returns>
          private async Task<string> GetParameterLoad(string command, dynamic jsonDynamic)
         {
             string commandSQL = command;
@@ -98,12 +117,17 @@ namespace recipeconfigurationservice.ETLClass
             }
             return commandSQL;
         }
-
+        /// <summary>
+        ///  get input parameters for complete command SQL
+        /// </summary>
+        /// <param name="command">command SQL</param>
+        /// <param name="jsonExtract">input in json to complete command</param>
+        /// <returns></returns>
         private async Task<string> GetParameterExtract(string command, dynamic jsonExtract)
         {
             string commandSQL = command;
             bool first = true;
-            foreach(var input in _sqlConfiguration.input)
+            foreach(var input in _sqlConfiguration.input.OrderBy(x=> x.order))
             {
                  if(!first)
                     commandSQL = commandSQL + ",";
@@ -118,7 +142,12 @@ namespace recipeconfigurationservice.ETLClass
             return commandSQL;
         }
 
-
+        /// <summary>
+        /// Execute command in database
+        /// </summary>
+        /// <param name="commandSQL">command SQL</param>
+        /// <param name="stringConnection">string of connection with DB</param>
+        /// <returns>ienumerable object with result of database</returns>
         private async Task<IEnumerable<dynamic>> ExecuteCommand(string commandSQL,string stringConnection)
         {
           
@@ -133,7 +162,12 @@ namespace recipeconfigurationservice.ETLClass
            
             
         }
-
+        /// <summary>
+        /// add output configuration in a dictionary
+        /// </summary>
+        /// <param name="dicExtract">dictionary of Extract for add</param>
+        /// <param name="dbResult"> ienumerable with information of DB</param>
+        /// <returns></returns>
         private async Task<bool> AddInDictionary(Dictionary<string,string> dicExtract,IEnumerable<dynamic> dbResult)
         {
 
@@ -146,7 +180,12 @@ namespace recipeconfigurationservice.ETLClass
 
             return true;
         }
-
+        /// <summary>
+        /// Return the value of a path in an enumerable od object 
+        /// </summary>
+        /// <param name="dbResult">ienumerable object</param>
+        /// <param name="path">path for search</param>
+        /// <returns>return value in string</returns>
         private async Task<string> GetValueDbResultPath(IEnumerable<object> dbResult,string path)
         {
             string value = string.Empty;

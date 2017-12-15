@@ -29,6 +29,11 @@ namespace recipeconfigurationservice.ETLClass
             _json = json;
 
         }
+        /// <summary>
+        /// Process to Extract of information
+        /// </summary>
+        /// <param name="objExtract">object of Extraction</param>
+        /// <returns></returns>
         public override async Task<bool> Extract(ObjExtract objExtract)
         {
             //Obtém a url
@@ -44,22 +49,37 @@ namespace recipeconfigurationservice.ETLClass
 
             return true;
         }
+        /// <summary>
+        /// Process load in commnication with API
+        /// </summary>
+        /// <param name="dicExtract">dictionary of Extract</param>
+        /// <returns>string with information of process load</returns>
         public override async Task<string> Load(Dictionary<string,string> dicExtract)
         {
-            // converte para json
-            var jsonExtract = JsonConvert.SerializeObject(dicExtract);
-             //Obtém a url
-            var url = await ConstructUrlLoad(jsonExtract);
+            try{
+                // converte para json
+                var jsonExtract = JsonConvert.SerializeObject(dicExtract);
+                //Obtém a url
+                var url = await ConstructUrlLoad(jsonExtract);
 
-            var jsonSend = await ConstructJsonDynamic(jsonExtract);
-            
-            // Comunicaçao com a api externa
-            string returnApi = await _httpOtherApi.RestCommunication(_apiLoad.method,url,jsonSend);
+                var jsonSend = await ConstructJsonDynamic(jsonExtract);
+                
+                // Comunicaçao com a api externa
+                string returnApi = await _httpOtherApi.RestCommunication(_apiLoad.method,url,jsonSend);
 
-            // Pendencia
-            return returnApi;
+                // Pendencia
+                return returnApi;
+            }
+            catch (Exception ex)
+            {
+                return "Load Api: " + ex.Message;
+            }
         }
-
+        /// <summary>
+        /// Contructor of url to process extraction
+        /// </summary>
+        /// <param name="jsonExtract">json with parameters to construct of url</param>
+        /// <returns>complete url</returns>
         private async Task<string> ConstructUrlExtract(dynamic jsonExtract)
         {
             UriBuilder url = new UriBuilder(_apiConfiguration.endPoint);
@@ -67,13 +87,26 @@ namespace recipeconfigurationservice.ETLClass
             foreach(var input in _apiConfiguration.input)
             {
                 var value =  await GetValueParameter(input.type,input.path,input.value,jsonExtract);
-                query[input.nameParameter] = value;
+
+                if(input.nameParameter == "/")
+                    {
+                        url.Path += input.nameParameter+value;
+                    }
+                else
+                    {
+                         query[input.nameParameter] = value;
+                    }
+               
             }
             url.Query = query.ToString();
 
             return url.ToString();
         }
-
+        /// <summary>
+        /// Contructor of url to process load
+        /// </summary>
+        /// <param name="json">json with parameters to construct of url</param>
+        /// <returns>complete url</returns>
         private async Task<string> ConstructUrlLoad(dynamic json)
         {
             UriBuilder url = new UriBuilder(_apiLoad.endPoint);
@@ -87,7 +120,11 @@ namespace recipeconfigurationservice.ETLClass
 
             return url.ToString();
         }
-
+        /// <summary>
+        /// Constructor json with the configuration of parameters loading
+        /// </summary>
+        /// <param name="json">json dynamic with parameters of load</param>
+        /// <returns>json dynamic</returns>
         private async Task<string> ConstructJsonDynamic(dynamic json)
         {
             Dictionary<string,object> dicJson = new Dictionary<string, object>();
@@ -99,7 +136,12 @@ namespace recipeconfigurationservice.ETLClass
 
             return JsonConvert.SerializeObject(dicJson);
         }
-
+        /// <summary>
+        /// return the data with correct format 
+        /// </summary>
+        /// <param name="value">value data in string</param>
+        /// <param name="typeData">enum with type data</param>
+        /// <returns>return data in the format</returns>
         private object GetTypeData(string value, ETypeData typeData)
         {
             if(string.IsNullOrEmpty(value))
@@ -119,7 +161,12 @@ namespace recipeconfigurationservice.ETLClass
 
             return null;
         }
-
+        /// <summary>
+        /// Add property of json of Extraction to dictionary of Extract
+        /// </summary>
+        /// <param name="jsonString">json dynamic</param>
+        /// <param name="dicExtract">dictionary Extract</param>
+        /// <returns>dictonary</returns>
         private async Task<IDictionary<string,string>> ComposeDictionaryOfExtract(string jsonString
         , Dictionary<string,string> dicExtract)
         {           
